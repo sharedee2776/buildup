@@ -1,0 +1,9 @@
+#:schema node_modules/wrangler/config-schema.json
+name = "buildup"
+compatibility_date = "2026-09-01"
+
+# Static-site deploy: no Worker script, just serve these files at the edge.
+# This is what makes `npx wrangler deploy` (Cloudflare's current Git-connected
+# deploy command) actually publish index.html instead of an empty Worker.
+[assets]
+directory = "."
