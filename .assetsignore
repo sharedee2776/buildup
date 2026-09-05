@@ -1,0 +1,12 @@
+# Wrangler's static-assets uploader doesn't read .gitignore, so it needs
+# its own exclusion list. Without this, `npm install`-ed devDependencies
+# (jsdom, @resvg/resvg-js) get uploaded to the edge as "site assets".
+node_modules/
+test/
+scripts/
+package.json
+package-lock.json
+wrangler.toml
+.assetsignore
+.gitignore
+README.md
