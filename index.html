@@ -1,0 +1,1296 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Learn how technology works by making real things. A gentle, offline-friendly tech playground for kids.">
+<meta name="theme-color" content="#7A5AF8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#201D31" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="./icons/icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="BuildUp">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+  :root { color-scheme: light dark; }
+  html, body { margin: 0; }
+  body { font: 400 14px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; background: #FFF9F0; }
+  img { max-width: 100%; }
+  [hidden] { display: none !important; }
+</style>
+<title>BuildUp</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:ital,wght@0,400;0,600;0,700;0,800&display=swap">
+<style>
+  :root{
+    --ground:#FFF9F0; --ground-2:#FDEEDA; --surface:#FFFFFF;
+    --ink:#2E2A4A; --ink-soft:#6B6684; --ink-faint:#A29DB6; --line:#EFE6D7;
+    --purple:#7A5AF8; --purple-deep:#5A3FD6; --purple-tint:#F0ECFF;
+    --blue:#2E9BF0; --blue-tint:#E4F3FE;
+    --green:#22C482; --green-deep:#12A167; --green-tint:#E0F6EC;
+    --yellow:#FFC02E; --yellow-tint:#FFF2CF;
+    --orange:#FF8A4C; --orange-tint:#FFEBDE;
+    --accent:var(--purple); --accent-deep:var(--purple-deep); --accent-tint:var(--purple-tint);
+    --shadow:0 18px 44px -18px rgba(46,42,74,.34);
+    --shadow-sm:0 6px 18px -8px rgba(46,42,74,.24);
+    --radius:28px; --radius-sm:18px; --tap:58px;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --ground:#201D31; --ground-2:#2A2640; --surface:#2C2843;
+      --ink:#F4F1FF; --ink-soft:#BAB4D4; --ink-faint:#8B86A6; --line:#3D3859;
+      --purple-tint:#362C64; --blue-tint:#213649; --green-tint:#1D3B36;
+      --yellow-tint:#3A3220; --orange-tint:#3A2A21;
+      --shadow:0 20px 46px -18px rgba(0,0,0,.6); --shadow-sm:0 8px 20px -10px rgba(0,0,0,.55);
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#201D31; --ground-2:#2A2640; --surface:#2C2843;
+    --ink:#F4F1FF; --ink-soft:#BAB4D4; --ink-faint:#8B86A6; --line:#3D3859;
+    --purple-tint:#362C64; --blue-tint:#213649; --green-tint:#1D3B36;
+    --yellow-tint:#3A3220; --orange-tint:#3A2A21;
+    --shadow:0 20px 46px -18px rgba(0,0,0,.6); --shadow-sm:0 8px 20px -10px rgba(0,0,0,.55);
+  }
+
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    min-height:100vh;
+    background:
+      radial-gradient(circle at 12% 6%, var(--ground-2), transparent 42%),
+      radial-gradient(circle at 88% 96%, var(--ground-2), transparent 40%),
+      var(--ground);
+    color:var(--ink);
+    font-family:"Nunito","Segoe UI",system-ui,sans-serif;
+    font-size:16px; line-height:1.5; -webkit-font-smoothing:antialiased;
+  }
+  .frame{max-width:452px;margin:0 auto;padding:20px 16px 108px;min-height:100vh}
+  h1,h2,h3{font-family:"Fredoka","Trebuchet MS",sans-serif;font-weight:600;text-wrap:balance;margin:0}
+  button{font-family:inherit}
+  :focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:10px}
+
+  /* ---------- shared card + buttons ---------- */
+  .card{background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px}
+  .btn{
+    width:100%;min-height:var(--tap);border:0;border-radius:var(--radius-sm);
+    background:var(--accent);color:#fff;font-family:"Fredoka","Trebuchet MS",sans-serif;
+    font-weight:600;font-size:1.08rem;cursor:pointer;box-shadow:var(--shadow-sm);
+    transition:transform .1s,filter .15s;
+  }
+  .btn:hover{filter:brightness(1.05)}
+  .btn:active{transform:translateY(2px)}
+  .btn[disabled]{opacity:.4;cursor:not-allowed;box-shadow:none;filter:none}
+  .btn.go{background:var(--green)}
+  .btn.sec{background:var(--surface);color:var(--ink);border:2px solid var(--line);box-shadow:none}
+  .btn.sec:hover{border-color:var(--accent);color:var(--accent);filter:none}
+  .btn.ghost{background:transparent;color:var(--ink-soft);box-shadow:none;min-height:44px;
+    font-size:.96rem;text-decoration:underline;text-underline-offset:3px}
+  .btn.ghost:hover{color:var(--accent);filter:none}
+  .actions{display:flex;flex-direction:column;gap:10px;margin-top:18px}
+
+  /* ---------- mascot ---------- */
+  .kobo{width:120px;height:120px}
+  .kobo.bob{animation:bob 3.6s ease-in-out infinite}
+  .kobo .spark{transform-origin:60px 12px;animation:spark 1.8s ease-in-out infinite}
+  .kobo.wave .arm-r{transform-origin:100px 60px;animation:wave 1.4s ease-in-out infinite}
+  .kobo.cheer .arm-r{transform:rotate(-58deg);transform-origin:100px 66px}
+  .kobo.cheer .arm-l{transform:rotate(58deg);transform-origin:20px 66px}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+  @keyframes spark{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(1.35)}}
+  @keyframes wave{0%,100%{transform:rotate(-16deg)}50%{transform:rotate(10deg)}}
+  .bubble{position:relative;background:var(--accent-tint);color:var(--ink);border-radius:18px;
+    padding:14px 16px;font-weight:600;line-height:1.45}
+  .bubble.up::after{content:"";position:absolute;left:30px;top:-10px;border:10px solid transparent;
+    border-bottom-color:var(--accent-tint);border-top:0}
+
+  /* ---------- onboarding ---------- */
+  .ob{min-height:calc(100vh - 128px);display:flex;flex-direction:column}
+  .ob .card{flex:1;display:flex;flex-direction:column}
+  .wordmark{font-family:"Fredoka","Trebuchet MS",sans-serif;font-weight:700;font-size:1.12rem;
+    display:flex;align-items:center;gap:7px}
+  .wordmark .d{width:10px;height:10px;border-radius:50%;background:var(--yellow);box-shadow:0 0 0 4px var(--yellow-tint)}
+  .obtop{display:flex;align-items:center}
+  .obtop .sp{flex:1}
+  .iconbtn{width:38px;height:38px;border:2px solid var(--line);background:var(--surface);border-radius:50%;
+    color:var(--ink-soft);font-weight:800;cursor:pointer}
+  .iconbtn:hover{border-color:var(--accent);color:var(--accent)}
+  .dots{display:flex;gap:6px;justify-content:center;margin:14px 0 4px}
+  .dots i{height:6px;width:6px;border-radius:99px;background:var(--line);transition:width .3s,background .3s}
+  .dots i.now{width:24px;background:var(--accent)}
+  .dots i.done{background:var(--accent)}
+  .step{flex:1;display:flex;flex-direction:column;padding-top:8px;animation:in .3s ease}
+  .step[hidden]{display:none}
+  @keyframes in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .grow{flex:1}
+  .lead{font-size:1.55rem;line-height:1.18;margin:0 0 8px}
+  .sub{margin:0;color:var(--ink-soft);font-size:1rem}
+  .stack{display:flex;flex-direction:column;gap:11px;margin-top:16px}
+  .pick{display:flex;align-items:center;gap:13px;width:100%;text-align:left;padding:13px 14px;
+    border:2px solid var(--line);background:var(--surface);border-radius:var(--radius-sm);cursor:pointer;color:inherit;
+    transition:border-color .15s,background .15s}
+  .pick:hover{border-color:var(--accent)}
+  .pick[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-tint)}
+  .pick .em{width:44px;height:44px;flex:none;border-radius:13px;background:var(--ground);display:grid;place-items:center;font-size:23px}
+  .pick[aria-pressed="true"] .em{background:var(--surface)}
+  .pick .tx{flex:1;min-width:0}
+  .pick .tx b{font-family:"Fredoka","Trebuchet MS",sans-serif;font-weight:600;font-size:1.05rem;display:block}
+  .pick .tx span{color:var(--ink-soft);font-size:.9rem}
+  .field{width:100%;min-height:var(--tap);border:2px solid var(--line);border-radius:var(--radius-sm);
+    background:var(--surface);color:var(--ink);padding:0 18px;margin-top:16px;
+    font-family:"Fredoka","Trebuchet MS",sans-serif;font-size:1.12rem;font-weight:500}
+  .field::placeholder{color:var(--ink-faint);font-weight:400}
+  .field:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-tint)}
+  .fhint{margin:9px 2px 0;color:var(--ink-soft);font-size:.9rem}
+  .qrow{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}
+  .qrow:last-of-type{border-bottom:0}
+  .qrow p{margin:0;flex:1;font-weight:700;font-size:.98rem}
+  .qrow .yn{display:flex;gap:6px;flex:none}
+  .yn button{border:2px solid var(--line);background:var(--surface);color:var(--ink-soft);border-radius:12px;
+    padding:8px 10px;font-size:.82rem;font-weight:800;cursor:pointer}
+  .yn button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-tint);color:var(--ink)}
+
+  /* ---------- home ---------- */
+  .home{display:flex;flex-direction:column;gap:16px;animation:in .3s ease}
+  .hi{display:flex;align-items:center;gap:12px}
+  .hi .kobo{width:76px;height:76px;flex:none}
+  .hi h1{font-size:1.5rem;line-height:1.1}
+  .hi p{margin:2px 0 0;color:var(--ink-soft);font-size:.98rem}
+  .chips{display:flex;gap:8px;flex-wrap:wrap}
+  .chip{background:var(--surface);border:2px solid var(--line);border-radius:99px;padding:7px 12px;
+    font-weight:800;font-size:.84rem;display:flex;align-items:center;gap:6px}
+  .xpbar{height:10px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:2px}
+  .xpbar i{display:block;height:100%;background:var(--yellow);border-radius:99px;transition:width .5s}
+  .xpwrap .lab{display:flex;justify-content:space-between;font-size:.8rem;font-weight:800;color:var(--ink-soft);margin-bottom:5px}
+
+  .next{background:var(--surface);border:2px solid var(--green);border-radius:var(--radius);box-shadow:var(--shadow);
+    padding:20px;position:relative;overflow:hidden}
+  .next .tag{font-weight:800;font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;color:var(--green-deep)}
+  .next h2{font-size:1.3rem;margin:4px 0 0}
+  .next p{margin:10px 0 0;color:var(--ink-soft);font-size:.96rem}
+  .metastrip{display:flex;flex-wrap:wrap;gap:7px;margin-top:13px}
+  .metastrip span{background:var(--ground);border-radius:99px;padding:6px 11px;font-weight:800;font-size:.8rem}
+
+  .panel{background:var(--surface);border:2px solid var(--line);border-radius:var(--radius);padding:18px}
+  .panel h3{font-size:1.05rem;margin:0 0 12px;display:flex;align-items:center;gap:8px}
+  .track{display:flex;align-items:flex-start;gap:0;overflow-x:auto;padding-bottom:4px}
+  .world{flex:none;width:76px;text-align:center;position:relative}
+  .world .orb{width:44px;height:44px;margin:0 auto;border-radius:50%;display:grid;place-items:center;font-size:20px;
+    background:var(--ground);border:2px solid var(--line)}
+  .world.done .orb{background:var(--green-tint);border-color:var(--green)}
+  .world.now .orb{background:var(--accent-tint);border-color:var(--accent);animation:pulse 2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 var(--accent-tint)}50%{box-shadow:0 0 0 7px transparent}}
+  .world small{display:block;margin-top:6px;font-size:.72rem;font-weight:800;color:var(--ink-faint)}
+  .world.now small,.world.done small{color:var(--ink-soft)}
+  .world::after{content:"";position:absolute;top:21px;left:60px;width:32px;height:2px;background:var(--line)}
+  .world:last-child::after{display:none}
+
+  .empty{display:flex;gap:12px;align-items:center;color:var(--ink-soft);font-size:.94rem}
+  .empty .box{width:46px;height:46px;flex:none;border-radius:13px;background:var(--ground);display:grid;place-items:center;font-size:22px}
+
+  /* ---------- bottom nav ---------- */
+  .nav{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:2px solid var(--line);
+    display:flex;justify-content:center;gap:4px;padding:8px 8px calc(8px + env(safe-area-inset-bottom));z-index:5}
+  .nav button{flex:1;max-width:96px;background:transparent;border:0;cursor:pointer;color:var(--ink-faint);
+    font-weight:800;font-size:.7rem;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;border-radius:12px}
+  .nav button .ic{font-size:20px}
+  .nav button[aria-current="page"]{color:var(--accent)}
+  .nav[hidden]{display:none}
+
+  /* ---------- mission player ---------- */
+  .mp{display:flex;flex-direction:column;min-height:calc(100vh - 128px);animation:in .3s ease}
+  .mptop{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+  .mpbar{flex:1;height:8px;background:var(--line);border-radius:99px;overflow:hidden}
+  .mpbar i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .4s}
+  .beat{flex:1;display:flex;flex-direction:column;animation:in .28s ease}
+  .beat h2{font-size:1.4rem;line-height:1.16;margin:0 0 8px}
+  .beat .say{margin-top:12px}
+  .rows{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+  .trow{display:flex;gap:12px;align-items:flex-start;background:var(--surface);border:2px solid var(--line);
+    border-radius:var(--radius-sm);padding:13px 14px}
+  .trow .e{font-size:22px;flex:none}
+  .trow b{font-family:"Fredoka","Trebuchet MS",sans-serif;font-weight:600;display:block;font-size:1rem}
+  .trow span{color:var(--ink-soft);font-size:.9rem}
+
+  .opts{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+  .opt{width:100%;text-align:left;padding:14px 15px;border:2px solid var(--line);background:var(--surface);
+    border-radius:var(--radius-sm);cursor:pointer;color:inherit;font-weight:700;font-size:.98rem;
+    transition:border-color .15s,background .15s}
+  .opt:hover{border-color:var(--accent)}
+  .opt[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-tint)}
+  .opt.right{border-color:var(--green);background:var(--green-tint)}
+  .opt.wrong{border-color:var(--orange);background:var(--orange-tint)}
+  .opt[disabled]{cursor:default}
+  .feedback{margin-top:14px;background:var(--accent-tint);border-radius:16px;padding:14px 15px;font-weight:600;
+    font-size:.96rem;line-height:1.45;animation:in .25s ease}
+  .feedback.ok{background:var(--green-tint)}
+  .feedback.hmm{background:var(--orange-tint)}
+
+  /* sort */
+  .pool{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+  .tok{background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:10px 12px;font-weight:800;
+    font-size:.86rem;cursor:pointer}
+  .tok:hover{border-color:var(--accent)}
+  .tok[disabled]{opacity:.35;cursor:default}
+  .bins{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+  .bin{border:2px dashed var(--line);border-radius:var(--radius-sm);padding:12px;min-height:120px}
+  .bin h4{margin:0 0 8px;font-family:"Fredoka","Trebuchet MS",sans-serif;font-size:.9rem;color:var(--ink-soft);text-align:center}
+  .bin .drop{display:flex;flex-direction:column;gap:6px}
+  .bin .tok{width:100%;text-align:left}
+  .bin.a{background:var(--blue-tint)} .bin.b{background:var(--purple-tint)}
+
+  /* journey beat */
+  .wire{position:relative;margin:26px 0 8px;height:150px}
+  .rail{position:absolute;top:38px;left:8%;right:8%;height:3px;background:var(--line);border-radius:2px}
+  .rail.dash{background:repeating-linear-gradient(90deg,var(--line) 0 8px,transparent 8px 16px)}
+  .nd{position:absolute;top:38px;transform:translate(-50%,-50%);width:60px;text-align:center}
+  .nd .o{width:52px;height:52px;margin:0 auto;border-radius:16px;background:var(--surface);border:2px solid var(--line);
+    display:grid;place-items:center;font-size:24px;transition:transform .3s,border-color .3s,background .3s}
+  .nd small{display:block;margin-top:6px;font-size:.7rem;font-weight:800;color:var(--ink-faint)}
+  .nd.you{left:8%} .nd.net{left:50%} .nd.srv{left:92%}
+  .nd.hot .o{border-color:var(--accent);background:var(--accent-tint);transform:scale(1.12)}
+  .pkt{position:absolute;top:38px;left:8%;transform:translate(-50%,-50%);background:var(--accent);color:#fff;
+    font-weight:800;font-size:.72rem;padding:6px 9px;border-radius:11px;white-space:nowrap;
+    transition:left 1.05s ease,background .3s;box-shadow:var(--shadow-sm)}
+  .pkt[hidden]{display:none}
+  .pkt.back{background:var(--green)}
+  .miniweb{position:absolute;top:76px;left:8%;transform:translateX(-50%);width:54px;background:var(--surface);
+    border:2px solid var(--green);border-radius:8px;padding:6px;animation:in .3s ease}
+  .miniweb[hidden]{display:none}
+  .miniweb i{display:block;height:4px;border-radius:2px;background:var(--green);margin-bottom:3px}
+  .miniweb i:nth-child(2){width:70%} .miniweb i:nth-child(3){width:85%}
+  .journeycap{margin-top:6px;text-align:center;color:var(--ink-soft);font-weight:700;font-size:.9rem;min-height:20px}
+
+  /* url beat */
+  .urlpill{display:flex;flex-wrap:wrap;gap:4px;margin-top:16px;justify-content:center}
+  .urlpill span{font-family:"Fredoka","Trebuchet MS",sans-serif;font-weight:600;font-size:1.05rem;
+    padding:8px 10px;border-radius:10px;background:var(--ground)}
+  .urlpill span.k{background:var(--purple-tint);color:var(--purple-deep)}
+  .urlpill span.p{background:var(--green-tint);color:var(--green-deep)}
+
+  /* recap */
+  .recap{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+  .recap li{list-style:none;display:flex;gap:11px;align-items:flex-start;background:var(--green-tint);
+    border-radius:14px;padding:12px 13px;font-weight:600;font-size:.95rem;line-height:1.4}
+  .recap li .ck{width:22px;height:22px;flex:none;border-radius:50%;background:var(--green);color:#fff;
+    display:grid;place-items:center;font-weight:900;font-size:12px}
+
+  /* evidence card (detective cases) */
+  .evidence{background:var(--ground);border:2px solid var(--line);border-left:5px solid var(--orange);
+    border-radius:14px;padding:13px 15px;margin-top:14px;font-weight:600;line-height:1.45}
+  .evidence .who{display:block;font-size:.68rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;
+    color:var(--ink-faint);margin-bottom:6px}
+  .beat .kase{font-weight:800;font-size:.74rem;letter-spacing:.09em;text-transform:uppercase;color:var(--orange);margin:0 0 4px}
+
+  /* complete */
+  .done{min-height:calc(100vh - 128px);display:flex;flex-direction:column;align-items:center;text-align:center;
+    justify-content:center;gap:6px;animation:in .3s ease;position:relative}
+  .done .badge{width:104px;height:104px;border-radius:50%;background:var(--yellow-tint);border:3px solid var(--yellow);
+    display:grid;place-items:center;font-size:48px;margin-bottom:6px}
+  .done h1{font-size:1.7rem}
+  .done .xpgain{font-weight:800;color:var(--green-deep);font-size:1.05rem}
+  .burst{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+  .burst i{position:absolute;top:32%;left:50%;width:11px;height:11px;border-radius:3px;background:var(--yellow);
+    animation:pop .9s ease-out forwards}
+  @keyframes pop{0%{transform:translate(-50%,-50%) scale(.2);opacity:1}
+    100%{transform:translate(var(--dx),var(--dy)) scale(1) rotate(140deg);opacity:0}}
+
+  /* views: journey / builds / badges */
+  .view{animation:in .3s ease;display:flex;flex-direction:column;gap:14px}
+  .view h1{font-size:1.5rem}
+  .mlist{display:flex;flex-direction:column;gap:9px}
+  .mitem{display:flex;align-items:center;gap:12px;background:var(--surface);border:2px solid var(--line);
+    border-radius:var(--radius-sm);padding:13px 14px}
+  .mitem .n{width:30px;height:30px;flex:none;border-radius:9px;background:var(--ground);display:grid;place-items:center;
+    font-weight:800;font-size:.85rem}
+  .mitem.open .n{background:var(--accent-tint);color:var(--accent-deep)}
+  .mitem.open{border-color:var(--accent)}
+  .mitem b{font-family:"Fredoka","Trebuchet MS",sans-serif;font-weight:600;font-size:.98rem;flex:1}
+  .mitem .st{font-size:.78rem;font-weight:800;color:var(--ink-faint)}
+  .bgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .bcard{background:var(--surface);border:2px solid var(--line);border-radius:var(--radius-sm);padding:16px;text-align:center}
+  .bcard .ring{width:64px;height:64px;margin:0 auto 8px;border-radius:50%;display:grid;place-items:center;font-size:30px;
+    background:var(--ground);border:2px solid var(--line);filter:grayscale(1);opacity:.5}
+  .bcard.earned .ring{background:var(--yellow-tint);border-color:var(--yellow);filter:none;opacity:1}
+  .bcard b{font-family:"Fredoka","Trebuchet MS",sans-serif;font-weight:600;font-size:.9rem;display:block}
+  .bcard span{font-size:.78rem;color:var(--ink-faint)}
+
+  /* overlay */
+  .overlay{position:fixed;inset:0;z-index:20;background:rgba(32,29,49,.5);display:grid;place-items:center;padding:20px}
+  .overlay[hidden]{display:none}
+  .sheet{background:var(--surface);border-radius:24px;box-shadow:var(--shadow);max-width:400px;width:100%;
+    padding:24px;animation:in .25s ease}
+  .sheet h2{font-size:1.25rem;margin:0 0 6px}
+  .sheet>p{margin:0 0 14px;color:var(--ink-soft);font-size:.95rem}
+  .sheet ul{list-style:none;margin:0 0 18px;padding:0;display:flex;flex-direction:column;gap:11px}
+  .sheet li{display:flex;gap:11px;font-size:.92rem;font-weight:600;line-height:1.4}
+  .sheet li span{font-size:17px;flex:none}
+
+  @media (max-width:420px){
+    .frame{padding:16px 12px 104px}
+    .card{padding:18px}
+    .lead{font-size:1.4rem}
+    .bins{gap:8px}
+  }
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+</head>
+<body>
+<div class="frame" id="frame"></div>
+
+<nav class="nav" id="nav" hidden>
+  <button data-go="home"><span class="ic">🏠</span>Home</button>
+  <button data-go="journey"><span class="ic">🗺️</span>Journey</button>
+  <button data-go="builds"><span class="ic">🛠️</span>Builds</button>
+  <button data-go="badges"><span class="ic">🏆</span>Badges</button>
+</nav>
+
+<div class="overlay" id="overlay" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="shTitle">
+    <h2 id="shTitle">For grown-ups</h2>
+    <div id="shBody"></div>
+    <button class="btn" id="shClose">Got it</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var KEY = "buildup.v1";
+
+  /* ---------------- mascot ---------------- */
+  function kobo(mood){
+    var cls = "kobo " + (mood || "bob");
+    return '<svg class="'+cls+'" viewBox="0 0 120 120" role="img" aria-label="Kobo the robot">'
+      + '<line x1="60" y1="30" x2="60" y2="16" stroke="var(--purple-deep)" stroke-width="4" stroke-linecap="round"/>'
+      + '<g class="spark"><circle cx="60" cy="11" r="5.5" fill="var(--yellow)"/></g>'
+      + '<g class="arm-l"><rect x="12" y="56" width="16" height="34" rx="8" fill="var(--purple-deep)"/></g>'
+      + '<g class="arm-r"><rect x="92" y="'+(mood==="wave"?42:56)+'" width="16" height="34" rx="8" fill="var(--purple-deep)"/></g>'
+      + '<rect x="20" y="30" width="80" height="70" rx="26" fill="var(--purple)"/>'
+      + '<rect x="31" y="42" width="58" height="42" rx="18" fill="#fff"/>'
+      + '<circle cx="48" cy="61" r="6" fill="var(--ink)"/><circle cx="46" cy="59" r="2" fill="#fff"/>'
+      + '<circle cx="72" cy="61" r="6" fill="var(--ink)"/><circle cx="70" cy="59" r="2" fill="#fff"/>'
+      + '<path d="M50 71 Q60 '+(mood==="cheer"?82:80)+' 70 71" stroke="var(--ink)" stroke-width="4" fill="none" stroke-linecap="round"/>'
+      + '<circle cx="39" cy="70" r="4" fill="var(--orange)" opacity=".55"/>'
+      + '<circle cx="81" cy="70" r="4" fill="var(--orange)" opacity=".55"/>'
+      + '<circle cx="60" cy="94" r="8" fill="var(--yellow)"/>'
+      + '<circle cx="60" cy="94" r="4" fill="none" stroke="var(--purple-deep)" stroke-width="2"/>'
+      + '<ellipse cx="44" cy="104" rx="10" ry="6" fill="var(--purple-deep)"/>'
+      + '<ellipse cx="76" cy="104" rx="10" ry="6" fill="var(--purple-deep)"/>'
+      + '</svg>';
+  }
+
+  /* ---------------- state ---------------- */
+  function fresh(){
+    return {
+      onboarded:false,
+      profile:{name:"", ageBand:"", calib:0},
+      xp:0, streak:0, lastDay:"",
+      missions:{ m1:{status:"available", beat:0} },
+      badges:[],
+      reflections:[]
+    };
+  }
+  var S = fresh();
+  function load(){
+    try{
+      var raw = localStorage.getItem(KEY);
+      if(raw){ var o = JSON.parse(raw); if(o && typeof o === "object") S = Object.assign(fresh(), o); }
+    }catch(e){}
+  }
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+  load();
+
+  var frame = document.getElementById("frame");
+  var nav = document.getElementById("nav");
+  var overlay = document.getElementById("overlay");
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion:reduce)").matches;
+
+  function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];}); }
+  function name(){ return (S.profile.name||"").trim() || "Explorer"; }
+  function level(){ return Math.floor(S.xp/100)+1; }
+  function today(){ return new Date().toISOString().slice(0,10); }
+  function knows(){ return S.profile.calib >= 2; }
+
+  function touchStreak(){
+    var t = today();
+    if(S.lastDay === t) return;
+    var y = new Date(Date.now()-86400000).toISOString().slice(0,10);
+    S.streak = (S.lastDay === y) ? S.streak+1 : 1;
+    S.lastDay = t; save();
+  }
+
+  /* ---------------- worlds + badges ---------------- */
+  var WORLDS = [
+    {e:"🌍", label:"Digital"}, {e:"🤖", label:"AI"}, {e:"🎨", label:"Create"},
+    {e:"🛠️", label:"Build"}, {e:"🧠", label:"Think"}, {e:"🚀", label:"Ship"}
+  ];
+  var BADGES = [
+    {id:"digital-explorer", e:"🏅", name:"Digital Explorer", hint:"Finish Mission 1"},
+    {id:"internet-detective", e:"🔎", name:"Internet Detective", hint:"Finish Mission 2"},
+    {id:"secret-keeper", e:"🔐", name:"Secret Keeper", hint:"Finish Mission 3"},
+    {id:"ai-friend", e:"🤖", name:"AI Friend", hint:"Finish Mission 4"}
+  ];
+  var W1_MISSIONS = [
+    {id:"m1", n:1, title:"Meet Your Digital World"},
+    {id:"m2", n:2, title:"Become an Internet Detective"},
+    {id:"m3", n:3, title:"Protect Your Secret"},
+    {id:"m4", n:4, title:"Meet Your AI Robot"}
+  ];
+
+  /* ================================================================
+     MISSION CONTENT  —  missions are data. The player below renders
+     any mission built from these beat types:
+       intro · teach · predict · choose · sort · journey · url · recap · reflect
+     Add missions 2–10 as more objects like M1. No player changes needed.
+  ================================================================ */
+  var M1 = {
+    id:"m1", world:1, title:"Meet Your Digital World",
+    blurb:"What really happens when you open a website?",
+    minutes:12, xp:50, badge:"digital-explorer",
+    outro:"You can now explain what happens when you open a website. Next, you’ll start spotting tricks — and deciding what to believe online.",
+    summary:"How a web page travels from a far-away computer to the screen, what a URL is, and that a page failing to load has a reason you can find.",
+    parentPrompt:"Ask your child to explain, in their own words, what happens when you open a website.",
+    beats:[
+      { type:"intro",
+        kobo:"Every time you open a website, a tiny delivery trip happens — faster than you can blink. Today we follow that trip, one step at a time.",
+        start:"Start the trip" },
+
+      { type:"teach", basic:true,
+        h:"Four helpers",
+        body:"Opening a website is teamwork between four helpers:",
+        rows:[
+          ["📱","Your phone","The phone or laptop in your hand."],
+          ["🧭","The browser","The app you open to visit websites — like Chrome."],
+          ["🌐","The internet","The huge web of cables and signals joining computers everywhere."],
+          ["🖥️","The website’s computer","Lives far away, keeps the website, and sends a copy whenever someone asks. Grown-ups call it a server."]
+        ] },
+
+      { type:"predict",
+        q:"You type an address and press go. What happens first?",
+        options:[
+          ["Your phone asks a computer far away for the page", true],
+          ["The page is already inside your phone — it just appears", false],
+          ["The internet builds the page from nothing each time", false]
+        ],
+        reveal:"Your phone sends a little message across the internet: “Can I have this page, please?” Nothing shows up until the answer comes back." },
+
+      { type:"journey",
+        h:"The delivery trip",
+        kobo:"When you ask for a page, a little delivery trip happens — and it’s over in about half a second. Press the button and watch." },
+
+      { type:"choose", basic:true,
+        q:"Which one is the browser?",
+        options:[
+          ["The app with a round icon you tap to open websites", true],
+          ["The search box where you type what you’re looking for", false],
+          ["The wifi bars at the top of your screen", false]
+        ],
+        right:"Yes — the browser is the app itself. The search box lives inside it, and wifi is just how your phone reaches the internet.",
+        wrong:"Not quite. The browser is the app you open. The search box and the wifi bars are different things." },
+
+      { type:"sort",
+        h:"Near or far?",
+        a:"On your phone", b:"On a computer far away",
+        items:[
+          ["The browser app","a"],
+          ["The website’s words and pictures","b"],
+          ["Your saved photos","a"],
+          ["The page everyone else sees too","b"]
+        ],
+        done:"Anything other people also see lives on the far-away computer. Your phone only holds a copy while you look at it." },
+
+      { type:"url",
+        h:"The address",
+        body:"That address you type has a name: a URL. It works like a house address — it says which computer to ask, and which page you want from it.",
+        parts:[["https://",""],["buildup","k"],[".app",""],["/mission/1","p"]],
+        note:"Purple = which computer to ask.   Green = which page you want." },
+
+      { type:"choose",
+        q:"A website won’t load. What’s the most likely reason?",
+        options:[
+          ["Your phone isn’t connected to the internet right now", true],
+          ["The website was deleted from the whole world forever", false],
+          ["Your phone is broken and needs replacing", false]
+        ],
+        right:"Exactly. When something doesn’t work there’s almost always a small, findable reason — usually the connection, or the website’s computer having a bad moment.",
+        wrong:"Probably not. By far the most common reason is a lost connection — not something dramatic." },
+
+      { type:"recap",
+        h:"You just figured out",
+        points:[
+          "A website lives on a computer far away (grown-ups call it a server)",
+          "Your phone asks for the page, and that computer sends a copy back",
+          "The browser is an app; the internet is the connection — not the same thing",
+          "A URL is an address: which computer, which page",
+          "When a page won’t load, there’s a reason — and it can be found"
+        ] },
+
+      { type:"reflect",
+        q:"Before you go… what did YOU figure out today?",
+        options:["I learned something new","I understand something better","Something is still fuzzy"] }
+    ]
+  };
+
+  var M2 = {
+    id:"m2", world:1, title:"Become an Internet Detective",
+    blurb:"Not everything online is true. Learn to check.",
+    minutes:12, xp:50, badge:"internet-detective",
+    outro:"You’ve got a detective’s eye now. Next, you’ll learn how to keep your own secrets safe — starting with passwords.",
+    summary:"How to check something online: who said it, whether another source agrees, and to be careful when asked for private things.",
+    parentPrompt:"Ask your child: “What are two things you should check before believing something online?”",
+    beats:[
+      { type:"intro",
+        kobo:"People post all kinds of things online. Some true, some not, some just trying to trick you. Today you become a detective — three checks, and you’ll spot most tricks.",
+        start:"Open the first case" },
+
+      { type:"teach", basic:true,
+        h:"Your three detective checks",
+        body:"Before you believe something online, run these:",
+        rows:[
+          ["🗣️","Who said it?","A person you know? A real place? Or someone hiding?"],
+          ["🔁","Can anything else confirm it?","Does another source you trust say the same thing?"],
+          ["🔒","Is it asking for something private?","Passwords, money, your address — real messages rarely ask for these."]
+        ] },
+
+      { type:"choose",
+        title:"Case 1 · The free phone",
+        evidence:"🎉 CONGRATULATIONS! You’ve WON a free iPhone. Click here and type your password to claim it now!",
+        evidenceWho:"A message popped up",
+        q:"What do you do?",
+        options:[
+          ["Close it. Real prizes don’t ask for your password", true],
+          ["Type the password fast, before the prize is gone", false],
+          ["Send it to five friends so they can win too", false]
+        ],
+        right:"Exactly. If a message wants your password or money before it gives you something, it’s a trick. This one fails the 🔒 private-info check straight away.",
+        wrong:"Careful — this is a classic trick. It dangles a prize to grab your password. Nothing real works like that." },
+
+      { type:"choose",
+        title:"Case 2 · The “fact”",
+        evidence:"📚 Fact of the day: Abuja is a city inside Lagos State.",
+        evidenceWho:"Seen on a random page",
+        q:"Kobo found this online. Is it true?",
+        options:[
+          ["No — Abuja is Nigeria’s capital, its own territory, not in Lagos State", true],
+          ["Yes — if it’s written down, it must be true", false],
+          ["Can’t tell — they’re both in Nigeria, close enough", false]
+        ],
+        right:"Right. Being written down — even confidently — doesn’t make it true. One quick look at a map or an encyclopaedia and this falls apart. That’s the 🔁 confirm check.",
+        wrong:"Something being online doesn’t make it true. Abuja is the capital and its own Federal Capital Territory, not part of Lagos. Always worth a second source." },
+
+      { type:"choose",
+        title:"Case 3 · The expert claim",
+        evidence:"🏫 “This article was written by experts at a top university.” — posted on somerandomsite.info",
+        evidenceWho:"A website you don’t know",
+        q:"The page says experts wrote it. Should we trust it more?",
+        options:[
+          ["Only if we can actually find that university and check they said it", true],
+          ["Yes — it says “university”, that’s official", false],
+          ["No — universities never put anything online", false]
+        ],
+        right:"Good. Anyone can type the word “university”. A detective checks: does that place exist, and do they really say this? Claiming something isn’t proving it — that’s the 🗣️ who-said-it check.",
+        wrong:"A website can claim anything. The word “university” in the text doesn’t make it real — you’d have to find the university itself and check." },
+
+      { type:"choose",
+        title:"Case 4 · The screenshot",
+        evidence:"📸 [screenshot] “NO SCHOOL TOMORROW — pass it on!!”",
+        evidenceWho:"A friend forwarded this",
+        q:"What’s the detective move?",
+        options:[
+          ["Check with the school or a parent before believing it or sharing it", true],
+          ["Post it everywhere so nobody goes to school", false],
+          ["Believe it — it’s a screenshot, so it’s proof", false]
+        ],
+        right:"Yes. A screenshot is one of the easiest things to fake or take out of context. Before you believe it — or send it on — check with someone who’d actually know.",
+        wrong:"A screenshot proves almost nothing — they’re trivial to fake. And passing on a false one makes you part of the problem. Check with the school or a parent first." },
+
+      { type:"sort",
+        h:"Red flag or green flag?",
+        a:"🙂 Probably fine", b:"🚩 Be careful",
+        items:[
+          ["A message asks for your password","b"],
+          ["Your teacher tells you the homework in class","a"],
+          ["A stranger online promises free money","b"],
+          ["Three news sites you know report the same thing","a"],
+          ["A screenshot with no source that says “pass it on!!”","b"]
+        ],
+        done:"See the pattern? Asking for private things, promising too much, or no source you can check — red flags. People you know, and sources that match — green flags." },
+
+      { type:"recap",
+        h:"Your detective kit",
+        points:[
+          "Ask who said it — a real person or place, or someone hiding?",
+          "Look for another source you trust that says the same thing",
+          "Take extra care when something asks for a password, money, or private info",
+          "A screenshot or a confident sentence is not proof",
+          "If in doubt, check with someone who’d really know"
+        ] },
+
+      { type:"reflect",
+        q:"Before you go… what did YOU figure out today?",
+        options:["I learned something new","I understand something better","Something is still fuzzy"] }
+    ]
+  };
+
+  var M3 = {
+    id:"m3", world:1, title:"Protect Your Secret",
+    blurb:"Your password is a key. Learn to make it strong and keep it yours.",
+    minutes:12, xp:50, badge:"secret-keeper",
+    outro:"You know how to guard a secret now. Next, you’ll meet the AI robot — and start putting it to work for you.",
+    summary:"What a password protects, what makes one strong, that a password is never shared — even with a best friend — and that a scary “confirm your password” message means stop and ask a trusted grown-up.",
+    parentPrompt:"Ask your child to invent a strong password out loud from three random words — and to say why you never share it, even with a friend.",
+    beats:[
+      { type:"intro",
+        kobo:"A password is a key to your stuff — your messages, your photos, your game. Today you’ll learn to make a strong one, and to know exactly what to keep secret. Nothing scary — just useful.",
+        start:"Learn the secret skill" },
+
+      { type:"teach", basic:true,
+        h:"What a password protects",
+        body:"A password is a key. Behind it is:",
+        rows:[
+          ["💬","Your messages","What you’ve said, and who you said it to."],
+          ["📷","Your photos","Pictures only you should see."],
+          ["🎮","Your game","Your progress, your coins, your team."],
+          ["🪪","Being you","With your password, someone could pretend to be you."]
+        ] },
+
+      { type:"choose",
+        title:"Pick the strong one",
+        evidence:"Your username is: tobi2014",
+        evidenceWho:"Choosing a password",
+        q:"Which password is safest for this account?",
+        options:[
+          ["BlueGoat7Jollof!", true],
+          ["tobi2014", false],
+          ["password", false]
+        ],
+        right:"That one. It’s long, it mixes letters, a number and a symbol, and — most importantly — it says nothing about you. “tobi2014” is your name and birth year, easy to guess. “password” is the first thing anyone tries.",
+        wrong:"Careful — a password built from your name, your birthday, or a common word is easy to guess. Strong means long and *not about you*." },
+
+      { type:"sort",
+        h:"Secret, or OK to share?",
+        a:"🙂 OK to share", b:"🔒 Keep secret",
+        items:[
+          ["Your password","b"],
+          ["Your favourite football team","a"],
+          ["The code that unlocks the phone","b"],
+          ["A drawing you made","a"],
+          ["Your home address, to someone online","b"],
+          ["Your favourite colour","a"]
+        ],
+        done:"See it? Keep secret anything that could unlock your stuff or help a stranger find you. Fun facts about you — your team, your colour, your art — are yours to share." },
+
+      { type:"choose",
+        title:"Your best friend asks",
+        evidence:"“Hey — give me your game password so I can play on your account while you’re away this weekend?”",
+        evidenceWho:"Your best friend",
+        q:"What do you say?",
+        options:[
+          ["“No — a password stays mine. I can log in for you if you want.”", true],
+          ["“Sure, you’re my best friend.”", false],
+          ["“Only if you tell me yours too.”", false]
+        ],
+        right:"Exactly. A password is personal — even with people you trust. If something goes wrong later, it’s confusing for everyone. You can still help a friend without handing over the key.",
+        wrong:"Even your best friend. A password isn’t rude to keep — it’s just yours. Trading passwords or sharing “just this once” is how they leak." },
+
+      { type:"choose",
+        title:"The scary message",
+        evidence:"⚠️ “Someone tried to open your account! Confirm your password here in the next 5 minutes or it will be locked.”",
+        evidenceWho:"A message you weren’t expecting",
+        q:"It feels urgent and a bit scary. What’s the best move?",
+        options:[
+          ["Don’t type anything. Show a parent or a grown-up you trust, and check it together", true],
+          ["Quickly type your password so the account stays safe", false],
+          ["Ignore it completely and hope it goes away", false]
+        ],
+        right:"Yes. A real warning never needs you to type your password into a link. Scary + urgent + asking for a secret = stop, and get a grown-up you trust. You are never in trouble for asking someone to check.",
+        wrong:"That’s what the message wants — for you to rush. Slow down. Don’t type anything, and bring it to a grown-up you trust. Checking together is always the safe move." },
+
+      { type:"teach",
+        h:"A strong password you can actually remember",
+        body:"You don’t need random gibberish. Try three random words that don’t go together, plus a number and a symbol:",
+        rows:[
+          ["🔑","goat-lamp-jollof-9!","Three words with nothing to do with each other. Nothing about you. Long enough to be tough to guess."],
+          ["🧠","How to remember it","Picture it: a goat, holding a lamp, eating jollof. Silly pictures stick."]
+        ] },
+
+      { type:"recap",
+        h:"Your secret-keeper kit",
+        points:[
+          "A password is a key — make it long, and not about you",
+          "Keep secret: passwords, unlock codes, your address. Share freely: your team, your colour, your art",
+          "Never share a password — not even with your best friend",
+          "Scary + urgent + “type your password here” = stop, and tell a grown-up you trust",
+          "You are never in trouble for asking a grown-up to check something"
+        ] },
+
+      { type:"reflect",
+        q:"Before you go… what did YOU figure out today?",
+        options:["I learned something new","I understand something better","Something is still fuzzy"] }
+    ]
+  };
+
+  var MISSIONS = { m1:M1, m2:M2, m3:M3 };
+  var ORDER = ["m1","m2","m3"];
+  function badgeById(id){ for(var i=0;i<BADGES.length;i++){ if(BADGES[i].id===id) return BADGES[i]; } return null; }
+  function nextMissionId(){
+    for(var i=0;i<ORDER.length;i++){
+      var st = S.missions[ORDER[i]] && S.missions[ORDER[i]].status;
+      if(st === "available" || st === "in_progress") return ORDER[i];
+    }
+    return null;
+  }
+
+  /* ---------------- router ---------------- */
+  var view = "home";
+  function go(v){ view = v; render(); window.scrollTo(0,0); }
+
+  function render(){
+    nav.hidden = !S.onboarded || view === "mission" || view === "complete";
+    Array.prototype.forEach.call(nav.querySelectorAll("button"), function(b){
+      if(b.dataset.go === view) b.setAttribute("aria-current","page"); else b.removeAttribute("aria-current");
+    });
+    if(!S.onboarded){ return renderOnboarding(); }
+    if(view === "home") return renderHome();
+    if(view === "mission") return renderMission();
+    if(view === "complete") return renderComplete();
+    if(view === "journey") return renderJourney();
+    if(view === "builds") return renderBuilds();
+    if(view === "badges") return renderBadges();
+  }
+
+  /* ---------------- onboarding (shortened + calibration) ---------------- */
+  var ob = { i:0, cal:[null,null,null] };
+  var OB_STEPS = ["welcome","age","name","calib"];
+  var CAL_Q = ["I know what a web browser is","I’ve typed a website address myself","I know what “the internet” actually is"];
+
+  function renderOnboarding(){
+    var s = OB_STEPS[ob.i];
+    var h = '<div class="ob"><div class="card">'
+      + '<div class="obtop"><span class="wordmark"><span class="d"></span>BuildUp</span><span class="sp"></span>'
+      + '<button class="iconbtn" id="obInfo" aria-label="Information for grown-ups">?</button></div>'
+      + '<div class="dots">' + OB_STEPS.map(function(_,k){
+          return '<i class="'+(k<ob.i?"done":(k===ob.i?"now":""))+'"></i>';
+        }).join("") + '</div>';
+
+    if(s === "welcome"){
+      h += '<div class="step"><div style="display:flex;justify-content:center;margin:10px 0 14px">'+kobo("wave")+'</div>'
+        + '<h1 class="lead" tabindex="-1">Hi! I’m Kobo.</h1>'
+        + '<p class="sub">Welcome to BuildUp — where you learn how technology works by making real things. You start today, and you don’t need to know any code.</p>'
+        + '<div class="grow"></div><div class="actions">'
+        + '<button class="btn" data-next>Let’s go &rarr;</button>'
+        + '<button class="btn ghost" id="obInfo2">I’m a grown-up — what is this?</button></div></div>';
+    }
+    else if(s === "age"){
+      var A = [
+        ["explorer","🌱","7 to 10 · Explorer","Games, puzzles and making things"],
+        ["creator","🎨","11 to 13 · Creator","Build web pages and create with AI"],
+        ["builder","🚀","14 to 17 · Builder","Real code, real projects, ship it online"]
+      ];
+      h += '<div class="step"><h1 class="lead" tabindex="-1">How old are you?</h1>'
+        + '<p class="sub">This picks the right missions for you. You can change it later.</p><div class="stack">'
+        + A.map(function(a){ return '<button class="pick" aria-pressed="'+(S.profile.ageBand===a[0])+'" data-age="'+a[0]+'">'
+            + '<span class="em">'+a[1]+'</span><span class="tx"><b>'+a[2]+'</b><span>'+a[3]+'</span></span></button>'; }).join("")
+        + '</div><div class="grow"></div><div class="actions"><button class="btn" data-next '+(S.profile.ageBand?"":"disabled")+'>Next &rarr;</button></div></div>';
+    }
+    else if(s === "name"){
+      h += '<div class="step"><h1 class="lead" tabindex="-1">What should Kobo call you?</h1>'
+        + '<p class="sub">Just your first name or a nickname. That’s the only thing we ask for.</p>'
+        + '<input class="field" id="nm" type="text" maxlength="16" autocomplete="off" placeholder="Type your name…" value="'+esc(S.profile.name)+'">'
+        + '<p class="fhint">No last name, no email, no photo. It stays on this device.</p>'
+        + '<div class="grow"></div><div class="actions">'
+        + '<button class="btn" data-next>Next &rarr;</button>'
+        + '<button class="btn ghost" data-skip>Skip — just call me Explorer</button></div></div>';
+    }
+    else if(s === "calib"){
+      h += '<div class="step"><h1 class="lead" tabindex="-1">Quick check</h1>'
+        + '<p class="sub">Tap what’s true for you. No wrong answers — this just tells Kobo where to start you.</p><div style="margin-top:14px">'
+        + CAL_Q.map(function(q,k){ return '<div class="qrow"><p>'+q+'</p><div class="yn">'
+            + '<button data-cal="'+k+'" data-v="1" aria-pressed="'+(ob.cal[k]===1)+'">I know this</button>'
+            + '<button data-cal="'+k+'" data-v="0" aria-pressed="'+(ob.cal[k]===0)+'">Not yet</button></div></div>'; }).join("")
+        + '</div><div class="grow"></div><div class="actions"><button class="btn" data-next '
+        + (ob.cal.indexOf(null)===-1?"":"disabled")+'>Start BuildUp &rarr;</button></div></div>';
+    }
+    h += '</div></div>';
+    frame.innerHTML = h;
+
+    var lead = frame.querySelector("h1"); if(lead) try{ lead.focus(); }catch(e){}
+    bind("#obInfo", "click", openGrownup);
+    bind("#obInfo2", "click", openGrownup);
+    each("[data-age]", function(b){ b.onclick = function(){ S.profile.ageBand = b.dataset.age; save(); renderOnboarding(); }; });
+    each("[data-cal]", function(b){ b.onclick = function(){ ob.cal[+b.dataset.cal] = +b.dataset.v; renderOnboarding(); }; });
+    var nmEl = frame.querySelector("#nm");
+    if(nmEl) nmEl.oninput = function(){ S.profile.name = nmEl.value.replace(/\s+/g," ").replace(/^\s/,""); save(); };
+    each("[data-skip]", function(b){ b.onclick = function(){ S.profile.name = ""; save(); obNext(); }; });
+    each("[data-next]", function(b){ b.onclick = obNext; });
+  }
+  function obNext(){
+    if(OB_STEPS[ob.i] === "calib"){
+      S.profile.calib = ob.cal.reduce(function(a,c){ return a + (c===1?1:0); }, 0);
+      S.onboarded = true; save(); touchStreak(); go("home"); return;
+    }
+    ob.i++; renderOnboarding();
+  }
+
+  /* ---------------- home ---------------- */
+  function renderHome(){
+    touchStreak();
+    var doneCount = W1_MISSIONS.filter(function(m){ return S.missions[m.id] && S.missions[m.id].status === "done"; }).length;
+    var anyDone = ORDER.some(function(id){ return S.missions[id] && S.missions[id].status === "done"; });
+    var nid = nextMissionId();
+
+    var nextCard, greeting;
+    if(nid){
+      var nm = MISSIONS[nid], inProg = S.missions[nid].status === "in_progress";
+      greeting = anyDone ? "Nice work. Ready for the next one?" : "Ready to build something today?";
+      nextCard = '<div class="next"><div class="tag">Your next mission</div>'
+        + '<h2>'+nm.title+'</h2><p>'+nm.blurb+'</p>'
+        + '<div class="metastrip"><span>⏱️ ~'+nm.minutes+' min</span><span>⭐ +'+nm.xp+' XP</span><span>💸 ₦0</span></div>'
+        + '<div class="actions"><button class="btn go" id="startM" data-mid="'+nid+'">'
+        + (inProg ? "Continue Mission 🚀" : "Start Mission 🚀") + '</button></div></div>';
+    } else {
+      var last = ORDER[ORDER.length-1];
+      greeting = "You’ve done everything that’s ready. Come back soon!";
+      nextCard = '<div class="next" style="border-color:var(--line)"><div class="tag" style="color:var(--ink-faint)">Next mission</div>'
+        + '<h2>More on the way 🚧</h2><p>You’ve finished every mission that’s open right now. New ones are coming.</p>'
+        + '<div class="actions"><button class="btn sec" id="startM" data-mid="'+last+'">Replay ' + MISSIONS[last].title + '</button></div></div>';
+    }
+
+    frame.innerHTML =
+      '<div class="home">'
+      + '<div class="hi">'+kobo("bob")+'<div><h1>👋 Hi, '+esc(name())+'!</h1><p>'+greeting+'</p></div></div>'
+      + '<div class="chips"><span class="chip">🔥 '+S.streak+' day streak</span>'
+        + '<span class="chip">⭐ Level '+level()+' Explorer</span></div>'
+      + '<div class="xpwrap"><div class="lab"><span>XP</span><span>'+(S.xp%100)+' / 100</span></div>'
+        + '<div class="xpbar"><i style="width:'+(S.xp%100)+'%"></i></div></div>'
+      + nextCard
+      + '<div class="panel"><h3>🗺️ Your journey</h3><div class="track">'
+        + WORLDS.map(function(w,k){
+            var cls = k===0 ? (doneCount>=W1_MISSIONS.length?"done":"now") : "";
+            return '<div class="world '+cls+'"><div class="orb">'+w.e+'</div><small>'+w.label+'</small></div>';
+          }).join("")
+        + '</div></div>'
+      + '<div class="panel"><h3>🛠️ My latest build</h3>'
+        + '<div class="empty"><span class="box">🧱</span><span>Nothing here yet. In Mission 7 you build your first web page — it shows up here to keep.</span></div></div>'
+      + (anyDone ? '<button class="btn sec" id="showGrown">Show a grown-up my week →</button>' : '')
+      + '</div>';
+
+    var sb = frame.querySelector("#startM");
+    if(sb) sb.onclick = function(){ startMission(sb.dataset.mid); };
+    bind("#showGrown","click", openGrownup);
+  }
+
+  /* ---------------- mission player framework ---------------- */
+  var MP = null; // { mission, beats:[activeBeats], idx }
+
+  function startMission(id){
+    var m = MISSIONS[id]; if(!m) return;
+    var beats = m.beats.filter(function(b){ return !(b.basic && knows()); });
+    var saved = S.missions[id] || {};
+    var idx = (saved.status === "in_progress" && saved.beat < beats.length) ? saved.beat : 0;
+    MP = { mission:m, beats:beats, idx:idx, skipped: (beats.length !== m.beats.length) };
+    S.missions[id] = { status:"in_progress", beat:idx, everDone: !!saved.everDone }; save();
+    go("mission");
+  }
+  function mpAdvance(){
+    MP.idx++;
+    if(MP.idx >= MP.beats.length){ return finishMission(); }
+    S.missions[MP.mission.id].beat = MP.idx; save();
+    renderMission();
+    window.scrollTo(0,0);
+  }
+  function mpBack(){
+    if(MP.idx === 0){ go("home"); return; }
+    MP.idx--; S.missions[MP.mission.id].beat = MP.idx; save(); renderMission(); window.scrollTo(0,0);
+  }
+
+  function renderMission(){
+    var b = MP.beats[MP.idx];
+    var pct = Math.round((MP.idx)/(MP.beats.length) * 100);
+    var host = document.createElement("div");
+    host.className = "mp";
+    host.innerHTML =
+      '<div class="mptop"><button class="iconbtn" id="mpBack" aria-label="Back">&larr;</button>'
+      + '<div class="mpbar"><i style="width:'+pct+'%"></i></div>'
+      + '<span style="font-weight:800;font-size:.8rem;color:var(--ink-faint)">'+(MP.idx+1)+'/'+MP.beats.length+'</span></div>'
+      + '<div class="beat" id="beat"></div>';
+    frame.innerHTML = "";
+    frame.appendChild(host);
+    bind("#mpBack","click", mpBack);
+    var beatEl = host.querySelector("#beat");
+    (BEATS[b.type] || BEATS.teach)(beatEl, b);
+    var head = beatEl.querySelector("h2"); if(head){ try{ head.setAttribute("tabindex","-1"); head.focus(); }catch(e){} }
+  }
+
+  function primary(label, cls){
+    return '<div class="actions"><button class="btn '+(cls||"")+'" id="beatNext">'+label+'</button></div>';
+  }
+  // shared header for predict/choose beats: heading (case label or fallback) + optional evidence card + question
+  function caseHead(b, fallback){
+    var h = '<h2 tabindex="-1">'+(b.title || fallback)+'</h2>';
+    if(b.evidence) h += '<div class="evidence"><span class="who">'+(b.evidenceWho||"Seen online")+'</span>'+b.evidence+'</div>';
+    h += '<p class="sub" style="margin-top:'+(b.evidence?"12":"8")+'px">'+b.q+'</p>';
+    return h;
+  }
+
+  var BEATS = {
+    intro:function(host, b){
+      var m = MP.mission, num = ORDER.indexOf(m.id) + 1;
+      host.innerHTML = '<div style="display:flex;justify-content:center;margin:6px 0 14px">'+kobo("wave")+'</div>'
+        + '<h2 tabindex="-1">Mission '+num+' · '+m.title+'</h2>'
+        + '<div class="bubble up say">'+b.kobo+'</div>'
+        + (MP.skipped ? '<p class="fhint">Kobo skipped the warm-up parts — your quick check said you already know them.</p>' : '')
+        + '<div class="grow"></div>' + primary(b.start + " 🚀","go");
+      bind("#beatNext","click", mpAdvance);
+    },
+
+    teach:function(host, b){
+      host.innerHTML = '<h2 tabindex="-1">'+b.h+'</h2>'
+        + (b.body ? '<p class="sub" style="margin-top:8px">'+b.body+'</p>' : '')
+        + '<div class="rows">' + (b.rows||[]).map(function(r){
+            return '<div class="trow"><span class="e">'+r[0]+'</span><div><b>'+r[1]+'</b><span>'+r[2]+'</span></div></div>';
+          }).join("") + '</div><div class="grow"></div>' + primary("Got it →");
+      bind("#beatNext","click", mpAdvance);
+    },
+
+    predict:function(host, b){
+      host.innerHTML = caseHead(b, "Take a guess")
+        + '<div class="opts">' + b.options.map(function(o,k){
+            return '<button class="opt" data-k="'+k+'">'+o[0]+'</button>'; }).join("") + '</div>'
+        + '<div id="fb"></div><div class="grow"></div><div id="af"></div>';
+      var answered = false;
+      each(".opt", function(btn){
+        btn.onclick = function(){
+          if(answered) return; answered = true;
+          each(".opt", function(x){ x.disabled = true; x.setAttribute("aria-pressed","false"); });
+          btn.setAttribute("aria-pressed","true");
+          document.getElementById("fb").innerHTML =
+            '<div class="feedback ok"><b>Good guess.</b><br>'+b.reveal+'</div>';
+          document.getElementById("af").innerHTML = primary("Next →");
+          bind("#beatNext","click", mpAdvance);
+        };
+      });
+    },
+
+    choose:function(host, b){
+      host.innerHTML = caseHead(b, "Your call")
+        + '<div class="opts">' + b.options.map(function(o,k){
+            return '<button class="opt" data-k="'+k+'" data-c="'+(o[1]?1:0)+'">'+o[0]+'</button>'; }).join("") + '</div>'
+        + '<div id="fb"></div><div class="grow"></div><div id="af"></div>';
+      var locked = false;
+      each(".opt", function(btn){
+        btn.onclick = function(){
+          if(locked) return;
+          var correct = btn.dataset.c === "1";
+          btn.classList.add(correct ? "right" : "wrong");
+          if(correct){
+            locked = true;
+            each(".opt", function(x){ x.disabled = true; });
+            document.getElementById("fb").innerHTML = '<div class="feedback ok">'+b.right+'</div>';
+            document.getElementById("af").innerHTML = primary("Next →");
+            bind("#beatNext","click", mpAdvance);
+          } else {
+            btn.disabled = true;
+            document.getElementById("fb").innerHTML = '<div class="feedback hmm">'+b.wrong+' Try another.</div>';
+          }
+        };
+      });
+    },
+
+    sort:function(host, b){
+      var placed = {}; // idx -> 'a'|'b'
+      host.innerHTML = '<h2 tabindex="-1">'+b.h+'</h2>'
+        + '<p class="sub" style="margin-top:8px">Tap a card, then tap where it belongs.</p>'
+        + '<div class="pool" id="pool"></div>'
+        + '<div class="bins"><div class="bin a" data-bin="a"><h4>'+b.a+'</h4><div class="drop" id="da"></div></div>'
+        + '<div class="bin b" data-bin="b"><h4>'+b.b+'</h4><div class="drop" id="db"></div></div></div>'
+        + '<div id="fb"></div><div class="grow"></div><div id="af"></div>';
+      var selected = null;
+      function draw(){
+        var pool = document.getElementById("pool"); pool.innerHTML = "";
+        document.getElementById("da").innerHTML = ""; document.getElementById("db").innerHTML = "";
+        b.items.forEach(function(it, idx){
+          var t = document.createElement("button");
+          t.className = "tok"; t.textContent = it[0];
+          if(placed[idx]){
+            document.getElementById(placed[idx]==="a"?"da":"db").appendChild(t);
+            t.onclick = function(){ delete placed[idx]; selected = null; draw(); };
+          } else {
+            if(selected === idx) t.style.borderColor = "var(--accent)";
+            pool.appendChild(t);
+            t.onclick = function(){ selected = (selected===idx?null:idx); draw(); };
+          }
+        });
+        check();
+      }
+      each("[data-bin]", function(){});
+      host.querySelectorAll(".bin").forEach(function(bin){
+        bin.onclick = function(e){
+          if(e.target.closest(".tok")) return;
+          if(selected === null) return;
+          placed[selected] = bin.dataset.bin; selected = null; draw();
+        };
+      });
+      function check(){
+        if(Object.keys(placed).length !== b.items.length) return;
+        var ok = b.items.every(function(it, idx){ return placed[idx] === it[1]; });
+        if(ok){
+          document.getElementById("fb").innerHTML = '<div class="feedback ok"><b>All sorted.</b><br>'+b.done+'</div>';
+          document.getElementById("af").innerHTML = primary("Next →");
+          bind("#beatNext","click", mpAdvance);
+        } else {
+          document.getElementById("fb").innerHTML = '<div class="feedback hmm">Something’s not right yet. Tap a card to move it back and try again.</div>';
+          document.getElementById("af").innerHTML = "";
+        }
+      }
+      draw();
+    },
+
+    journey:function(host, b){
+      host.innerHTML = '<h2 tabindex="-1">'+b.h+'</h2>'
+        + '<div class="bubble up say">'+b.kobo+'</div>'
+        + '<div class="wire"><div class="rail dash"></div>'
+        + '<div class="nd you" id="ndYou"><div class="o">📱</div><small>Your phone</small></div>'
+        + '<div class="nd net"><div class="o">🌐</div><small>The internet</small></div>'
+        + '<div class="nd srv" id="ndSrv"><div class="o">🖥️</div><small>The website</small></div>'
+        + '<div class="pkt" id="pkt" hidden></div>'
+        + '<div class="miniweb" id="mw" hidden><i></i><i></i><i></i></div></div>'
+        + '<div class="journeycap" id="jcap"></div>'
+        + '<div class="grow"></div><div class="actions">'
+        + '<button class="btn" id="jSend">📨 Ask for the page</button>'
+        + '<button class="btn go" id="jNext" hidden>Next →</button></div>';
+
+      var pkt = host.querySelector("#pkt"), cap = host.querySelector("#jcap");
+      var srv = host.querySelector("#ndSrv"), you = host.querySelector("#ndYou");
+      var mw = host.querySelector("#mw"), send = host.querySelector("#jSend"), next = host.querySelector("#jNext");
+      var stage = 0;
+
+      function run(){
+        send.disabled = true;
+        if(reduce){
+          srv.classList.add("hot"); mw.hidden = false; you.querySelector(".o").textContent = "";
+          cap.textContent = "Your phone asked, the website’s computer found the page, it sent it back, and your browser showed it — in about half a second.";
+          send.textContent = "↻ Do it again"; send.disabled = false; next.hidden = false;
+          bind("#jNext","click", mpAdvance); return;
+        }
+        pkt.hidden = false; pkt.classList.remove("back");
+        pkt.textContent = "Can I have the page?";
+        pkt.style.left = "8%";
+        cap.textContent = "Your phone asks for the page.";
+        requestAnimationFrame(function(){ requestAnimationFrame(function(){ pkt.style.left = "92%"; }); });
+        setTimeout(function(){
+          srv.classList.add("hot");
+          cap.textContent = "The website’s computer finds it.";
+        }, 1150);
+        setTimeout(function(){
+          pkt.classList.add("back"); pkt.textContent = "Here’s the page! 📄";
+          pkt.style.left = "8%";
+          cap.textContent = "It sends the page back.";
+        }, 1750);
+        setTimeout(function(){
+          pkt.hidden = true; mw.hidden = false;
+          you.querySelector(".o").textContent = "";
+          cap.textContent = "Your browser shows it. That took about half a second.";
+          send.textContent = "↻ Do it again"; send.disabled = false;
+          next.hidden = false; bind("#jNext","click", mpAdvance);
+        }, 2900);
+      }
+      function reset(){
+        srv.classList.remove("hot"); mw.hidden = true; pkt.hidden = true;
+        you.querySelector(".o").textContent = "📱"; cap.textContent = "";
+      }
+      send.onclick = function(){ if(stage>0) reset(); stage++; run(); };
+    },
+
+    url:function(host, b){
+      host.innerHTML = '<h2 tabindex="-1">'+b.h+'</h2><p class="sub" style="margin-top:8px">'+b.body+'</p>'
+        + '<div class="urlpill">' + b.parts.map(function(p){
+            return '<span class="'+(p[1]||"")+'">'+esc(p[0])+'</span>'; }).join("") + '</div>'
+        + '<p class="fhint" style="text-align:center;margin-top:12px">'+b.note+'</p>'
+        + '<div class="grow"></div>' + primary("Next →");
+      bind("#beatNext","click", mpAdvance);
+    },
+
+    recap:function(host, b){
+      host.innerHTML = '<h2 tabindex="-1">'+b.h+'</h2><ul class="recap">'
+        + b.points.map(function(p){ return '<li><span class="ck">✓</span>'+p+'</li>'; }).join("")
+        + '</ul><div class="grow"></div>' + primary("Almost done →");
+      bind("#beatNext","click", mpAdvance);
+    },
+
+    reflect:function(host, b){
+      host.innerHTML = '<h2 tabindex="-1">One last thing</h2><p class="sub" style="margin-top:8px">'+b.q+'</p>'
+        + '<div class="opts">' + b.options.map(function(o,k){
+            return '<button class="opt" data-k="'+k+'">'+o[0]+'</button>'; }).join("") + '</div>'
+        + '<div id="rx"></div><div class="grow"></div><div id="af"></div>';
+      each(".opt", function(btn){
+        btn.onclick = function(){
+          each(".opt", function(x){ x.setAttribute("aria-pressed","false"); });
+          btn.setAttribute("aria-pressed","true");
+          var idx = +btn.dataset.k;
+          var fuzzy = idx === b.options.length - 1;
+          document.getElementById("rx").innerHTML = fuzzy
+            ? '<div class="feedback"><b>That’s completely okay.</b> What’s still fuzzy? (Kobo keeps this to make the mission better.)<br>'
+              + '<input class="field" id="rnote" style="margin-top:10px" maxlength="140" placeholder="Type here…"></div>'
+            : '<div class="feedback ok">Love that. See you tomorrow, '+esc(name())+'.</div>';
+          document.getElementById("af").innerHTML = primary("Finish mission 🎉","go");
+          bind("#beatNext","click", function(){
+            var note = document.getElementById("rnote");
+            S.reflections.push({ m:MP.mission.id, choice:b.options[idx], note: note ? note.value : "", day: today() });
+            save(); mpAdvance();
+          });
+        };
+      });
+    }
+  };
+
+  function finishMission(){
+    var m = MP.mission;
+    var prev = S.missions[m.id] || {};
+    var everDone = prev.status === "done" || prev.everDone;
+    S.missions[m.id] = { status:"done", beat: MP.beats.length, everDone:true };
+    if(!everDone){
+      S.xp += m.xp;
+      if(m.badge && S.badges.indexOf(m.badge) === -1) S.badges.push(m.badge);
+    }
+    // unlock the next mission in sequence
+    var oi = ORDER.indexOf(m.id);
+    if(oi > -1 && oi + 1 < ORDER.length){
+      var nid = ORDER[oi + 1], nst = S.missions[nid] && S.missions[nid].status;
+      if(!nst || nst === "locked") S.missions[nid] = { status:"available", beat:0 };
+    }
+    save();
+    go("complete");
+  }
+
+  function renderComplete(){
+    var m = MP ? MP.mission : M1;
+    var bd = badgeById(m.badge);
+    frame.innerHTML = '<div class="done"><div class="burst" id="burst"></div>'
+      + '<div style="margin-bottom:4px">'+kobo("cheer")+'</div>'
+      + '<div class="badge">'+(bd ? bd.e : "🏅")+'</div>'
+      + '<h1>Mission complete!</h1>'
+      + '<p class="xpgain">+'+m.xp+' XP · Badge earned: '+(bd ? bd.name : "")+'</p>'
+      + '<p class="sub" style="margin-top:6px;max-width:300px">'+(m.outro || "")+'</p>'
+      + '<div class="actions" style="max-width:280px;width:100%">'
+      + '<button class="btn go" id="cHome">Back to home</button>'
+      + '<button class="btn ghost" id="cGrown">Show a grown-up my week</button></div></div>';
+    bind("#cHome","click", function(){ go("home"); });
+    bind("#cGrown","click", openGrownup);
+    if(!reduce){
+      var burst = document.getElementById("burst");
+      var cols = ["var(--yellow)","var(--purple)","var(--green)","var(--orange)","var(--blue)"];
+      for(var i=0;i<16;i++){
+        var s = document.createElement("i");
+        var ang = Math.PI*2*(i/16) + Math.random()*0.5, dist = 90 + Math.random()*90;
+        s.style.setProperty("--dx",(Math.cos(ang)*dist).toFixed(0)+"px");
+        s.style.setProperty("--dy",(Math.sin(ang)*dist-40).toFixed(0)+"px");
+        s.style.background = cols[i%cols.length];
+        s.style.animationDelay = (Math.random()*0.12).toFixed(2)+"s";
+        burst.appendChild(s);
+      }
+      setTimeout(function(){ if(burst) burst.innerHTML = ""; }, 1200);
+    }
+  }
+
+  /* ---------------- journey / builds / badges ---------------- */
+  function renderJourney(){
+    var doneCount = W1_MISSIONS.filter(function(m){ return S.missions[m.id] && S.missions[m.id].status === "done"; }).length;
+    frame.innerHTML = '<div class="view"><h1>🗺️ Your journey</h1>'
+      + '<div class="panel"><h3>🌍 World 1 · Digital</h3>'
+      + '<p class="sub" style="margin:-4px 0 12px">Understand the digital world around you.</p><div class="mlist">'
+      + W1_MISSIONS.map(function(m){
+          var st = S.missions[m.id] && S.missions[m.id].status;
+          var open = st === "available" || st === "in_progress" || st === "done";
+          var label = st === "done" ? "✓ Done" : (st === "in_progress" ? "In progress" : (st === "available" ? "Ready" : "🔒 Locked"));
+          return '<div class="mitem '+(open?"open":"")+'" data-m="'+(st?m.id:"")+'">'
+            + '<span class="n">'+m.n+'</span><b>'+m.title+'</b><span class="st">'+label+'</span></div>';
+        }).join("")
+      + '</div></div>'
+      + '<div class="panel"><h3>🔒 Coming next</h3><div class="track">'
+      + WORLDS.slice(1).map(function(w){ return '<div class="world"><div class="orb">'+w.e+'</div><small>'+w.label+'</small></div>'; }).join("")
+      + '</div><p class="fhint" style="margin-top:10px">Finish World 1 to open World 2.</p></div></div>';
+    each("[data-m]", function(el){
+      if(!el.dataset.m) return;
+      el.style.cursor = "pointer";
+      el.onclick = function(){ startMission(el.dataset.m); };
+    });
+  }
+
+  function renderBuilds(){
+    frame.innerHTML = '<div class="view"><h1>🛠️ My builds</h1>'
+      + '<div class="panel"><div class="empty"><span class="box">🧱</span>'
+      + '<span>You haven’t built anything yet. Your first real web page comes in <b>Mission 7</b> — and everything you make lives here, for keeps.</span></div></div>'
+      + '<p class="fhint">Missions 1–4 are about understanding how things work. Building starts after that.</p></div>';
+  }
+
+  function renderBadges(){
+    frame.innerHTML = '<div class="view"><h1>🏆 My badges</h1><div class="bgrid">'
+      + BADGES.map(function(bd){
+          var earned = S.badges.indexOf(bd.id) !== -1;
+          return '<div class="bcard '+(earned?"earned":"")+'"><div class="ring">'+bd.e+'</div>'
+            + '<b>'+bd.name+'</b><span>'+(earned?"Earned 🎉":bd.hint)+'</span></div>';
+        }).join("")
+      + '</div></div>';
+  }
+
+  /* ---------------- grown-up sheet ---------------- */
+  function openGrownup(){
+    var doneMs = ORDER.filter(function(id){ return S.missions[id] && S.missions[id].status === "done"; }).map(function(id){ return MISSIONS[id]; });
+    var body;
+    if(doneMs.length){
+      var refl = S.reflections.slice(-1)[0];
+      var badgeNames = doneMs.map(function(m){ var bd = badgeById(m.badge); return bd ? bd.name : ""; }).filter(Boolean).join(", ");
+      var last = doneMs[doneMs.length - 1];
+      body = '<p>Here’s what '+esc(name())+' has done so far.</p><ul>'
+        + '<li><span>✅</span><span>'+doneMs.length+' mission'+(doneMs.length>1?'s':'')+' finished: <b>'
+          + doneMs.map(function(m){ return esc(m.title); }).join('</b>, <b>') + '</b></span></li>'
+        + '<li><span>🏅</span><span>Badges: '+esc(badgeNames)+'</span></li>'
+        + '<li><span>🔥</span><span>'+S.streak+'-day streak · Level '+level()+'</span></li>'
+        + doneMs.map(function(m){ return '<li><span>💡</span><span>'+esc(m.summary)+'</span></li>'; }).join("")
+        + (refl ? '<li><span>🧠</span><span>'+esc(name())+' reflected: “'+esc(refl.choice)+'”'+(refl.note?' — “'+esc(refl.note)+'”':'')+'</span></li>' : '')
+        + '</ul><p style="font-size:.86rem;color:var(--ink-faint)">Try this together: '+esc(last.parentPrompt)+'</p>';
+      document.getElementById("shTitle").textContent = "👋 " + name() + "’s week";
+    } else {
+      body = '<p>BuildUp teaches children how technology works, how to use AI wisely, and how to build things themselves — starting from the basics.</p><ul>'
+        + '<li><span>🔒</span><span>No messaging strangers, no public profiles. Not now, not later.</span></li>'
+        + '<li><span>🧒</span><span>We keep a first name only, on this device. No email, location or photo.</span></li>'
+        + '<li><span>🤖</span><span>No AI in this version. When it arrives it will be guided by each mission — hints, never finished answers.</span></li>'
+        + '<li><span>📴</span><span>Designed to work offline on low-cost phones.</span></li>'
+        + '<li><span>👀</span><span>You’ll get a plain-language weekly summary of what your child made and learned.</span></li></ul>';
+      document.getElementById("shTitle").textContent = "For grown-ups";
+    }
+    document.getElementById("shBody").innerHTML = body;
+    overlay.hidden = false;
+    document.getElementById("shClose").focus();
+  }
+  bind("#shClose","click", function(){ overlay.hidden = true; });
+  overlay.onclick = function(e){ if(e.target === overlay) overlay.hidden = true; };
+  document.addEventListener("keydown", function(e){ if(e.key === "Escape" && !overlay.hidden) overlay.hidden = true; });
+
+  /* ---------------- helpers + nav wiring ---------------- */
+  function bind(sel, ev, fn){ var el = frame.querySelector(sel) || document.querySelector(sel); if(el) el.addEventListener(ev, fn); }
+  function each(sel, fn){ Array.prototype.forEach.call(frame.querySelectorAll(sel), fn); }
+
+  Array.prototype.forEach.call(nav.querySelectorAll("button"), function(btn){
+    btn.addEventListener("click", function(){ go(btn.dataset.go); });
+  });
+
+  render();
+})();
+</script>
+
+<script>
+  /* register the service worker so BuildUp works offline after the first visit */
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("./sw.js").catch(function () {});
+    });
+  }
+</script>
+</body>
+</html>

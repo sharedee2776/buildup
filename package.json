@@ -1,0 +1,17 @@
+{
+  "name": "buildup",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Learn how technology works by making real things. A tech playground for kids.",
+  "scripts": {
+    "dev": "npx --yes serve -l 5173 .",
+    "deploy": "npx --yes wrangler pages deploy . --project-name buildup",
+    "icons": "bash scripts/make-icons.sh",
+    "fonts": "bash scripts/fetch-fonts.sh",
+    "test": "node test/e2e.js"
+  },
+  "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2",
+    "jsdom": "^24.1.1"
+  }
+}

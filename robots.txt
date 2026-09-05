@@ -1,0 +1,3 @@
+# BuildUp is in private playtesting. Keep it out of search indexes for now.
+User-agent: *
+Disallow: /
