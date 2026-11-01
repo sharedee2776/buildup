@@ -6,6 +6,19 @@ calibration check, a Home screen, a reusable mission-player, and three playable
 missions. No accounts, no AI, no network required after the first load. All progress
 lives in the browser on the device (`localStorage`).
 
+**Who it's for:** children aged 7–17 who want to find out how technology works, and the
+parents or teachers helping them, including on low-end phones and patchy connections.
+
+**Built with:** plain HTML, CSS and JavaScript, with a service worker for offline use.
+There is no framework and no build step. Tests run on Node with jsdom. Hosted on
+Cloudflare Pages.
+
+**Privacy:** BuildUp collects nothing. There are no accounts, analytics or trackers, and
+progress never leaves the device. The only outside request is for Google Fonts, until
+you self-host them with `npm run fonts`.
+
+See [ROADMAP.md](./ROADMAP.md) for what's next.
+
 ```
 index.html              the whole app (hand-authored HTML/CSS/JS, no build step)
 manifest.webmanifest    PWA manifest — installable to a phone home screen
@@ -79,8 +92,11 @@ node test/e2e.js
 ## Not in this build (by design)
 
 No social features, no child-to-child messaging, no public profiles, no leaderboards,
-no accounts, no live AI, no native apps. See the product blueprint for the full
-"what we refuse to build in V1" list. Parent accounts + progress sync + a guided AI
+no accounts, no live AI, no native apps. Parent accounts + progress sync + a guided AI
 helper come in a later phase (that is when a backend — Supabase, plus a small service
 on Railway/Fly for the AI proxy — enters the picture; today there is nothing to run
 server-side).
+
+## License
+
+[MIT](./LICENSE)

@@ -2,6 +2,7 @@
   "name": "buildup",
   "version": "0.1.0",
   "private": true,
+  "license": "MIT",
   "description": "Learn how technology works by making real things. A tech playground for kids.",
   "scripts": {
     "dev": "npx --yes serve -l 5173 .",
